@@ -29,13 +29,15 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.graphics.Bitmap.Config.ARGB_8888;
+
 /**
  * created by: Sunshine at 2019/12/4
  * 图文混排富文本工具类
  */
 public class RichTextTool {
     // 默认图片高度修正比例
-    private static final float FIX_RATE_NORMAL = 1.1f;
+    private static final float FIX_RATE_NORMAL = 1.15f;
     // 本地解析图片字典集合
     private static HashMap<String, Integer> localImgDictionary = new HashMap<>();
     private static ArrayList<String> localImgTag = new ArrayList<>();
@@ -157,8 +159,9 @@ public class RichTextTool {
         delayIndexArray.add(source);
         if (textView.getLineSpacingExtra() != 0 || textView.getLineSpacingMultiplier() != 1) {
             textView.setVisibility(View.INVISIBLE);
-            if (delayIndexArray.size() >= imgLineList.size())
-                setRichTextDelay(textView, content, imgLineList);
+            if (delayIndexArray.size() >= imgLineList.size()) {
+                new Handler(Looper.getMainLooper()).postDelayed(() -> setRichTextDelay(textView, content, imgLineList), 100);
+            }
         } else {
             textView.setVisibility(View.VISIBLE);
         }
@@ -275,11 +278,11 @@ public class RichTextTool {
         if (imageLineBean != null && imageLineBean.lineNum < 0) imageLineBean.lineNum = 0;
         if (imageLineBean != null && (textView.getLineSpacingMultiplier() != 1 || textView.getLineSpacingExtra() != 0)) {
             if (imageLineBean.lineHeight > 0 && imageLineBean.textWordHeight > 0)
-                fixRatePlant[0] = imageLineBean.lineHeight * 0.85f / imageLineBean.textWordHeight;
+                fixRatePlant[0] = imageLineBean.lineHeight * 0.90f / imageLineBean.textWordHeight;
         }
         // 根据最新比例拓展图片的宽度和高度
         int fixBitmapHeight = (int) (oldBmp.getHeight() * fixRatePlant[0]);
-        fixBitmap = Bitmap.createBitmap(oldBmp.getWidth(), fixBitmapHeight, oldBmp.getConfig());
+        fixBitmap = Bitmap.createBitmap(oldBmp.getWidth(), fixBitmapHeight, ARGB_8888);
         Canvas canvas = new Canvas(fixBitmap);
         canvas.drawBitmap(oldBmp, 0f, 0f, null);
         oldBmp.recycle();
