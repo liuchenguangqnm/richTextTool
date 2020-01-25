@@ -42,7 +42,7 @@ public class RichTextTool {
     private static HashMap<String, Integer> localImgDictionary = new HashMap<>();
     private static ArrayList<String> localImgTag = new ArrayList<>();
     // img标签成功解析后的匹配
-    public static final Pattern pattern = Pattern.compile("￼");
+    private static final Pattern pattern = Pattern.compile("￼");
 
     // 有新的图文混排需要在这里加上就行了
     static {
